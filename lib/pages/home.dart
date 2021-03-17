@@ -6,15 +6,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int f = 0;
   Map data = {};
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
+    // this gets the data from loading.dart
+    //data = data.isNotEmpty ? data! : ModalRoute.of(context).settings.arguments;
+    if (f == 0) {
+      data = ModalRoute.of(context).settings.arguments;
+      f = 1;
+    }
+
     print(data);
 
     // set background
-    String bgImage = data['isDaytime'] ? 'day.png' : 'night.png';
+    String bgImage = 'day.png';
+    //String bgImage = data['isDaytime'] ? 'day.png' : 'night.png';
     //Color bgColor = Colors.blue;
     //bgColor = data['isDaytiime'] ? Colors.blue : Colors.indigo[700];
 
@@ -33,8 +41,19 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 TextButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/location');
+                  onPressed: () async {
+                    dynamic result =
+                        await Navigator.pushNamed(context, '/location');
+                    setState(
+                      () {
+                        data = {
+                          'time': result['time'],
+                          'location': result['location'],
+                          'isDaytime': result['isDaytime'],
+                          'flag': result['flag'],
+                        };
+                      },
+                    );
                   },
                   icon: Icon(
                     Icons.edit_location,
