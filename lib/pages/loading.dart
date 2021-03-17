@@ -10,32 +10,31 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  void getTime() async {
-    Response response = await get(
-        Uri.parse('https://worldtimeapi.org/api/timezone/Europe/Moscow'));
-    Map data = jsonDecode(response.body);
-    //print(data);
-    //print(data['timezone']);
-    String datetime = data['datetime'];
-    print(datetime);
-    String offset = data['utc_offset'].substring(1, 3);
-    print(offset);
+  String time = 'loading';
 
-    DateTime now = DateTime.parse(datetime);
-    now = now.add(Duration(hours: int.parse(offset)));
-    print(now);
+  void setupWorldTime() async {
+    WorldTime instance = WorldTime(
+        location: 'Berlin', flag: 'germany.png', url: 'Europe/Berlin');
+    await instance.getTime();
+    print(instance.time);
+    setState(() {
+      time = instance.time;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getTime();
+    setupWorldTime();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('loading screen'),
+      body: Padding(
+        padding: const EdgeInsets.all(50.0),
+        child: Text(time),
+      ),
     );
   }
 }
