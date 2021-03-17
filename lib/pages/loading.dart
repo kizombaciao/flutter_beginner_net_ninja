@@ -12,10 +12,18 @@ class Loading extends StatefulWidget {
 class _LoadingState extends State<Loading> {
   void getTime() async {
     Response response = await get(
-        Uri.parse('https://worldtimeapi.org/api/timezone/Europe/London'));
+        Uri.parse('https://worldtimeapi.org/api/timezone/Europe/Moscow'));
     Map data = jsonDecode(response.body);
-    print(data);
-    print(data['timezone']);
+    //print(data);
+    //print(data['timezone']);
+    String datetime = data['datetime'];
+    print(datetime);
+    String offset = data['utc_offset'].substring(1, 3);
+    print(offset);
+
+    DateTime now = DateTime.parse(datetime);
+    now = now.add(Duration(hours: int.parse(offset)));
+    print(now);
   }
 
   @override
